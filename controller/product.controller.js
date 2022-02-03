@@ -13,30 +13,47 @@ exports.fetchProduct1Controller = (req, res) => {
   res.json(product);
 };
 
-exports.deleteProductController = (req, res) => {
-  const { productId } = req.params;
-  const foundProduct = products.find((product) => +product.id === +productId);
-  if (foundProduct) {
-    products = products.filter((product) => +product.id !== +productId);
-    res.json(foundProduct);
-    // res.status(204).end();
-  } else {
-    res.status(404);
-    res.json("this product is not exist");
+exports.deleteProductController = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const foundProduct = await Product.findByIdAndDelete(productId);
+    // products.find((product) => +product.id === +productId);
+    if (foundProduct) {
+      products = products.filter((product) => +product.id !== +productId);
+      res.status(204).json(foundProduct);
+      // res.status(204).end();
+    } else {
+      res.status(404);
+      res.json("this product is not exist");
+    }
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
   }
 };
-exports.addProductController = (req, res) => {
-  const { name, image, description, color, quantity, price } = req.body;
-  const Chproduct = {
-    name,
-    image,
-    description,
-    color,
-    quantity,
-    price,
-    id: Math.floor(Math.random() * 1000000),
-  };
-  products = [...products, Chproduct];
-  res.json({ msg: "Product is created", Chproduct });
-  //   res.json(product);
+exports.addProductController = async (req, res) => {
+  try {
+    const product = req.body;
+    const newProduct = await Product.create(product);
+
+    // products = [...products, newProduct];
+    res.status(201).json({ msg: "Product is created", newProduct });
+    //   res.json(product);
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
+};
+exports.updateProductController = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(productId, product, {
+      new: true,
+    });
+
+    // products = [...products, newProduct];
+    res.json({ msg: "Product is updated", payload: updatedProduct });
+    //   res.json(product);
+  } catch (error) {
+    res.status(400).json({ msg: error.message });
+  }
 };
