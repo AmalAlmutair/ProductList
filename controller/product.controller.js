@@ -1,6 +1,10 @@
-const productsData = require("../data/data");
+const Product = require("../db/models/Product");
+// const mangoose = require("mangoose");
+const productsData = require("../data");
 let products = productsData;
-exports.fetchProductController = (req, res) => {
+
+exports.fetchProductController = async (req, res) => {
+  const products = await Product.find();
   res.json(products);
 };
 

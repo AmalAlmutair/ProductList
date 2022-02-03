@@ -1,8 +1,8 @@
-const mangoose = require("mangoose");
+const mongoose = require("mongoose");
 
-const { model, schema } = require("mongoose");
+const { model, Schema } = require("mongoose");
 
-const ProductSchema = new schema(
+const ProductSchema = new Schema(
   {
     id: Number,
     name: String,
